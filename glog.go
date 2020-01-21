@@ -4,11 +4,18 @@ import "go.uber.org/zap"
 
 var Logger *zap.SugaredLogger
 
-func SetupLogger(verbose bool) {
-	config := zap.NewDevelopmentConfig()
-	config.OutputPaths = []string{"stderr"}
+type LoggerOption struct {
+	Output  []string
+	Verbose bool
+}
 
-	if verbose {
+func SetupLogger(ofs ...func(*LoggerOption)) {
+	options := setOptions(ofs)
+
+	config := zap.NewDevelopmentConfig()
+	config.OutputPaths = options.Output
+
+	if options.Verbose {
 		config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 	} else {
 		config.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
@@ -16,6 +23,31 @@ func SetupLogger(verbose bool) {
 
 	zl, _ := config.Build()
 	Logger = zl.Sugar()
+}
+
+func WithOutput(output []string) func(*LoggerOption) {
+	return func(options *LoggerOption) {
+		options.Output = output
+	}
+}
+
+func WithVerbose(verbose bool) func(*LoggerOption) {
+	return func(options *LoggerOption) {
+		options.Verbose = verbose
+	}
+}
+
+func setOptions(ofs []func(*LoggerOption)) *LoggerOption {
+	options := LoggerOption{
+		Output:  []string{"stderr"},
+		Verbose: false,
+	}
+
+	for _, of := range ofs {
+		of(&options)
+	}
+
+	return &options
 }
 
 func Debug(args ...interface{}) {
