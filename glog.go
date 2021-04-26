@@ -1,6 +1,10 @@
 package glog
 
-import "go.uber.org/zap"
+import (
+	"sync"
+
+	"go.uber.org/zap"
+)
 
 var Logger *zap.SugaredLogger
 
@@ -56,7 +60,23 @@ func Debug(args ...interface{}) {
 	}
 }
 
+func LDebug(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Debug(args...)
+	}
+}
+
 func Info(args ...interface{}) {
+	if Logger != nil {
+		Logger.Info(args...)
+	}
+}
+
+func LInfo(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Info(args...)
 	}
@@ -68,7 +88,23 @@ func Warn(args ...interface{}) {
 	}
 }
 
+func LWarn(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Warn(args...)
+	}
+}
+
 func Error(args ...interface{}) {
+	if Logger != nil {
+		Logger.Error(args...)
+	}
+}
+
+func LError(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Error(args...)
 	}
@@ -80,7 +116,23 @@ func Fatal(args ...interface{}) {
 	}
 }
 
+func LFatal(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Fatal(args...)
+	}
+}
+
 func Panic(args ...interface{}) {
+	if Logger != nil {
+		Logger.Panic(args...)
+	}
+}
+
+func LPanic(mu *sync.Mutex, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Panic(args...)
 	}
@@ -92,7 +144,23 @@ func Debugf(template string, args ...interface{}) {
 	}
 }
 
+func LDebugf(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Debugf(template, args...)
+	}
+}
+
 func Infof(template string, args ...interface{}) {
+	if Logger != nil {
+		Logger.Infof(template, args...)
+	}
+}
+
+func LInfof(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Infof(template, args...)
 	}
@@ -104,7 +172,23 @@ func Warnf(template string, args ...interface{}) {
 	}
 }
 
+func LWarnf(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Warnf(template, args...)
+	}
+}
+
 func Errorf(template string, args ...interface{}) {
+	if Logger != nil {
+		Logger.Errorf(template, args...)
+	}
+}
+
+func LErrorf(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Errorf(template, args...)
 	}
@@ -116,7 +200,23 @@ func Fatalf(template string, args ...interface{}) {
 	}
 }
 
+func LFatalf(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
+	if Logger != nil {
+		Logger.Fatalf(template, args...)
+	}
+}
+
 func Panicf(template string, args ...interface{}) {
+	if Logger != nil {
+		Logger.Panicf(template, args...)
+	}
+}
+
+func LPanicf(mu *sync.Mutex, template string, args ...interface{}) {
+	mu.Lock()
+	defer mu.Unlock()
 	if Logger != nil {
 		Logger.Panicf(template, args...)
 	}
